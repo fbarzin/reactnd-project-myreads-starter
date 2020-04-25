@@ -1,12 +1,13 @@
 import React, {Component} from 'react'
 import {Link} from "react-router-dom"
 import PropTypes from 'prop-types'
+import Book from "./Book"
 
 class Search extends Component {
 
   static propTypes = {
     onSearch: PropTypes.func.isRequired,
-    searchResult: PropTypes.object
+    searchResult: PropTypes.array
   }
 
   state = {
@@ -26,6 +27,7 @@ class Search extends Component {
 
   render() {
     const { query } = this.state
+    const { searchResult } = this.props
 
     return (
       <div className="search-books">
@@ -41,7 +43,15 @@ class Search extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid"></ol>
+          <ol className="books-grid">
+            {
+              searchResult && searchResult.length > 0 && searchResult.map((book) => (
+                <li key={book.id}>
+                  <Book book={book} />
+                </li>
+              ))
+            }
+          </ol>
         </div>
       </div>
     )
