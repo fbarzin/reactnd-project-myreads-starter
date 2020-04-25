@@ -7,11 +7,16 @@ class Search extends Component {
 
   static propTypes = {
     onSearch: PropTypes.func.isRequired,
-    searchResult: PropTypes.array
+    searchResult: PropTypes.array,
+    updateShelf: PropTypes.func.isRequired
   }
 
   state = {
     query: ''
+  }
+
+  componentWillUnmount() {
+    this.clearQuery()
   }
 
   updateQuery = (query) => {
@@ -27,7 +32,7 @@ class Search extends Component {
 
   render() {
     const { query } = this.state
-    const { searchResult } = this.props
+    const { searchResult, updateShelf } = this.props
 
     return (
       <div className="search-books">
@@ -47,7 +52,7 @@ class Search extends Component {
             {
               searchResult && searchResult.length > 0 && searchResult.map((book) => (
                 <li key={book.id}>
-                  <Book book={book} />
+                  <Book book={book} updateShelf={updateShelf} />
                 </li>
               ))
             }

@@ -6,11 +6,12 @@ import BookShelf from "./BookShelf"
 class ListBooks extends Component {
 
   static propTypes = {
-    books: PropTypes.array
+    books: PropTypes.array.isRequired,
+    updateShelf: PropTypes.func.isRequired
   }
 
   render() {
-    const {books} = this.props
+    const {books, updateShelf} = this.props
 
     const currentlyReading = books.filter((book) => {
       return book.shelf === 'currentlyReading'
@@ -34,14 +35,17 @@ class ListBooks extends Component {
             <BookShelf
               title={'Currently Reading'}
               books={currentlyReading}
+              updateShelf={updateShelf}
             />
             <BookShelf
               title={'Want to Read'}
               books={wantToRead}
+              updateShelf={updateShelf}
             />
             <BookShelf
               title={'Read'}
               books={read}
+              updateShelf={updateShelf}
             />
           </div>
         </div>

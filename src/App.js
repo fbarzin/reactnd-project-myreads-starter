@@ -1,11 +1,9 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
 import './App.css'
 import {Route} from "react-router-dom"
 import ListBooks from "./ListBooks"
 import Search from "./Search"
 import * as BooksAPI from "./BooksAPI"
-import {search} from "./BooksAPI"
 
 class BooksApp extends React.Component {
 
@@ -15,6 +13,10 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
+    this.getAllBooks()
+  }
+
+  getAllBooks = () => {
     BooksAPI.getAll()
       .then((books) => {
         this.setState(() => ({
@@ -24,7 +26,6 @@ class BooksApp extends React.Component {
   }
 
   searchBook = (query) => {
-    console.log(query)
     BooksAPI.search(query)
       .then((books) => {
         this.setState(() => ({
@@ -37,11 +38,8 @@ class BooksApp extends React.Component {
   updateShelf = (book, shelf) => {
     BooksAPI.update(book, shelf)
       .then((book) => {
-        this.setState((currentState) => ({
-          allBooks: currentState.allBooks.filter((item) => {
-            return item.id !== book.id
-          }).unshift(book)
-        }))
+        console.log('updatedBook', book)
+        this.getAllBooks()
       })
   }
 
@@ -53,6 +51,7 @@ class BooksApp extends React.Component {
         <Route exact path='/' render={() => (
           <ListBooks
             books={allBooks}
+            updateShelf={this.updateShelf}
           />
         )}/>
 
@@ -60,6 +59,7 @@ class BooksApp extends React.Component {
           <Search
             onSearch={this.searchBook}
             searchResult={searchResult}
+            updateShelf={this.updateShelf}
           />
         )}/>
       </div>
