@@ -17,13 +17,16 @@ class Book extends Component {
 
     const currentShelf = book.shelf || 'none'
 
+    const notAvailableImageUrl = 'http://books.google.com/books/content?id=1yx1tgAACAAJ&printsec=frontcover&img=1&zoom=1'
+    const thumbnail = book.imageLinks ? book.imageLinks.thumbnail : notAvailableImageUrl;
+
     return (
       <div className="book">
         <div className="book-top">
           <div className="book-cover" style={{
             width: 128,
             height: 193,
-            backgroundImage: `url(${book.imageLinks.thumbnail})`
+            backgroundImage: `url(${thumbnail})`
           }}/>
           <div className="book-shelf-changer">
             <select

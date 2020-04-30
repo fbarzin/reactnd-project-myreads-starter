@@ -8,7 +8,8 @@ class Search extends Component {
   static propTypes = {
     onSearch: PropTypes.func.isRequired,
     searchResult: PropTypes.array,
-    updateShelf: PropTypes.func.isRequired
+    updateShelf: PropTypes.func.isRequired,
+    noResult: PropTypes.bool
   }
 
   state = {
@@ -20,9 +21,9 @@ class Search extends Component {
   }
 
   updateQuery = (query) => {
-    this.props.onSearch(query)
+    query.length > 0 && this.props.onSearch(query)
     this.setState(() => ({
-      query: query.trim()
+      query: query
     }))
   }
 
@@ -31,8 +32,8 @@ class Search extends Component {
   }
 
   render() {
-    const { query } = this.state
-    const { searchResult, updateShelf } = this.props
+    const {query} = this.state
+    const {searchResult, updateShelf, noResult} = this.props
 
     return (
       <div className="search-books">
@@ -48,15 +49,19 @@ class Search extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid">
-            {
-              searchResult && searchResult.length > 0 && searchResult.map((book) => (
-                <li key={book.id}>
-                  <Book book={book} updateShelf={updateShelf} />
-                </li>
-              ))
-            }
-          </ol>
+          {
+            noResult ?
+              <p className='books-not-found'>Books not found</p> :
+              <ol className="books-grid">
+                {
+                  searchResult && searchResult.length > 0 && searchResult.map((book) => (
+                    <li key={book.id}>
+                      <Book book={book} updateShelf={updateShelf}/>
+                    </li>
+                  ))
+                }
+              </ol>
+          }
         </div>
       </div>
     )

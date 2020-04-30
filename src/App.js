@@ -4,12 +4,14 @@ import {Route} from "react-router-dom"
 import ListBooks from "./ListBooks"
 import Search from "./Search"
 import * as BooksAPI from "./BooksAPI"
+import _ from 'lodash'
 
 class BooksApp extends React.Component {
 
   state = {
     allBooks: [],
-    searchResult: []
+    searchResult: [],
+    searchNoResult: false
   }
 
   componentDidMount() {
@@ -25,15 +27,22 @@ class BooksApp extends React.Component {
       })
   }
 
-  searchBook = (query) => {
-    BooksAPI.search(query)
-      .then((books) => {
-        this.setState(() => ({
-          searchResult: books
-        }))
-        console.log('search => ', this.state.searchResult)
-      })
-  }
+  searchBook = _.debounce((query) => {
+      BooksAPI.search(query)
+        .then((books) => {
+          const booksWithShelf = !books.error ? books.map((book) => {
+            const myBook = this.state.allBooks.find((b) => (
+              b.id === book.id
+            ))
+            book.shelf = (myBook && myBook.shelf) || book.shelf
+            return book
+          }) : books
+          this.setState(() => ({
+            searchResult: books.error ? [] : booksWithShelf,
+            searchNoResult: !!books.error
+          }))
+        })
+    }, 200)
 
   updateShelf = (book, shelf) => {
     BooksAPI.update(book, shelf)
@@ -44,7 +53,7 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    const { allBooks, searchResult } = this.state
+    const { allBooks, searchResult, searchNoResult } = this.state
 
     return (
       <div className="app">
@@ -60,6 +69,7 @@ class BooksApp extends React.Component {
             onSearch={this.searchBook}
             searchResult={searchResult}
             updateShelf={this.updateShelf}
+            noResult={searchNoResult}
           />
         )}/>
       </div>
